@@ -11,7 +11,3 @@ image available from the [SAM Image Repository](https://docs.aws.amazon.com/serv
 * * `project-name`: the code repo name (for example)
 * * `user`: a valid username for the github repo
 * * `user@example.com`: contact info
-
-### Example File
-
-[Jenkinsfile](Jenkinsfile)
