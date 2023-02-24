@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Jenkins deployment role with S3"
+
+Parameters:
+  AppName:
+    Type: String
+  EnvName:
+    Description: dev, prod, etc.
+    Type: String
+  BucketPrefix:
+    Description: template location
+    Type: String
+    Default: user-artifacts
+  JenkinsAccountId:
+    Type: String
+    MaxLength: 12
+    MinLength: 12
+    Default: 123456789012
+
+Resources:
+  JenkinsDeploymentRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub ${AppName}-jenkins-deployer
+      AssumeRolePolicyDocument:
+        Statement:
+          - Principal:
+              AWS:
+                - !Ref JenkinsAccountId
+            Action:
+              - "sts:AssumeRole"
+            Effect: Allow
+      Policies:
+        - PolicyName: !Sub ${AppName}-jenkins-deploy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: "SAMTransformation"
+                Effect: Allow
+                Action:
+                  - "cloudformation:CreateChangeSet"
+                Resource: !Sub "arn:${AWS::Partition}:cloudformation:*:aws:transform/Serverless-2016-10-31"
+              - Sid: "CloudFormationPerms"
+                Effect: Allow
+                Action:
+                  - "cloudformation:Describe*"
+                  - "cloudformation:List*"
+                  - "cloudformation:TagResource"
+                Resource: "*"
+              - Sid: "StackPerms"
+                Effect: Allow
+                Action:
+                  - "cloudformation:CreateStack"
+                  - "cloudformation:CreateChangeSet"
+                  - "cloudformation:DeleteStack"
+                  - "cloudformation:DeleteChangeSet"
+                  - "cloudformation:ExecuteChangeSet"
+                  - "cloudformation:GetTemplateSummary"
+                  - "cloudformation:UpdateStack"
+                Resource: !Sub "arn:${AWS::Partition}:cloudformation:*:${AWS::AccountId}:stack/${AppName}*"
+              - Sid: "StackSetPerms"
+                Effect: Allow
+                Action:
+                  - "cloudformation:CreateStackSet"
+                  - "cloudformation:CreateStackInstances"
+                  - "cloudformation:UpdateStackSet"
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:cloudformation:*:${AWS::AccountId}:stackset/*"
+                  - !Sub "arn:${AWS::Partition}:cloudformation:*:${AWS::AccountId}:stackset-target/*"
+                  - !Sub "arn:${AWS::Partition}:cloudformation:*:${AWS::AccountId}:type/resource/*"
+              - Sid: "S3Perms"
+                Effect: Allow
+                Action:
+                  - "s3:GetObject"
+                  - "s3:PutObject"
+                Resource: !Sub "arn:${AWS::Partition}:s3:::${BucketPrefix}-${AWS::AccountId}-*/*"
+              - Sid: "ExecutionRole"
+                Effect: Allow
+                Action:
+                  - "iam:PassRole"
+                Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/CloudFormationExecutionRole"
+      Tags:
+        - Key: contact
+          Value: user@example.com
+        - Key: environment
+          Value: !Ref EnvName
