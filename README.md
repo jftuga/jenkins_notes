@@ -15,10 +15,10 @@ image available from the [SAM Image Repository](https://docs.aws.amazon.com/serv
 | Behavior | Settings | Notes |
 | -------- | -------- | ----- |
 | Discover Branches | Exclude branches that are also files as PRs | reduces redundant effort
-| Discover pull requests from origin | Merging the pull request with the current target branch | best option for my work flow; ex: merge feature-branch to main
+| Discover pull requests from origin | Merging the pull request with the current target branch | best option for my work flow; example: merge feature-branch to main
 | Discover pull requests from forks | Merging the pull request with the current target branch | *(See above)*
 | Trust | Forks in the same account | best option for my work flow
-| Filter by name | Exclude | *(any research such as Spikes)
+| Filter by name | Exclude | *(any research such as Spikes)*
 
 * Property strategy: `all branches get the same properties`
 
