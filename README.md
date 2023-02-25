@@ -78,7 +78,7 @@ This is a regular expression that:
 * Note that `.*?` will match the shortest possible string, while using `.*` will match the longest. If I did not include the `?` then this command would match until the end of file, which is not the desired outcome.
 * * *See also:* [Minimal or non-greedy quantifiers](https://www.ibm.com/docs/en/netcoolomnibus/8.1?topic=library-minimal-non-greedy-quantifiers)
 
-Another optimization is to use regular expression `repetition qualifiers`.  In this case, I need three consecutive `}` to end the match. What if I needed 15? This method would get ugly.  You can use the syntax of `{n}` where `n` is the number of matches you want.  This immediately follows the regular expression that you want it to match on, which may also need to be wrapped between `()`.  You can also use `{min,max}` to set lower and upper bounds.
+Another optimization is to use regular expression `repetition qualifiers`.  In this case, I need three consecutive `}` to end the match but what if I needed to match 15 braces? This method would get ugly.  You can use the syntax of `{n}` where `n` is the number of matches you want.  This immediately follows the regular expression that you want it to match on, which may also need to be wrapped between `()`.  You can also use `{min,max}` to set lower and upper bounds.
 
 I can shorten the command by using the following `repetition qualifier` syntax to get the same result.  Note that I wrapped `.*?` inside of parenthesis so that the `{3}` qualifier will work correctly.  This makes it easier to see smaller or larger portions of the stage by adjusting this value as needed.
 
